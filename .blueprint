@@ -1,0 +1,28 @@
+created:
+    - app/Http/Controllers/ClientController.php
+    - app/Http/Controllers/ServiceController.php
+    - app/Http/Controllers/OrderController.php
+    - app/Http/Controllers/OrderItemController.php
+    - database/factories/ClientFactory.php
+    - database/factories/ServiceFactory.php
+    - database/factories/OrderFactory.php
+    - database/factories/OrderItemFactory.php
+    - database/migrations/2026_01_11_002221_create_clients_table.php
+    - database/migrations/2026_01_11_002222_create_services_table.php
+    - database/migrations/2026_01_11_002223_create_orders_table.php
+    - database/migrations/2026_01_11_002224_create_order_items_table.php
+    - app/Models/Client.php
+    - app/Models/Service.php
+    - app/Models/Order.php
+    - app/Models/OrderItem.php
+    - tests/Feature/Http/Controllers/ClientControllerTest.php
+    - tests/Feature/Http/Controllers/ServiceControllerTest.php
+    - tests/Feature/Http/Controllers/OrderControllerTest.php
+    - tests/Feature/Http/Controllers/OrderItemControllerTest.php
+updated:
+    - routes/web.php
+models:
+    Client: { first_name: 'string:100', last_name: 'string:100', phone: 'string:30 nullable', email: 'string:150 nullable', address: 'string:255 nullable', timestamps: timestamps }
+    Service: { name: 'string:120', description: 'text nullable', price: 'decimal:10,2', timestamps: timestamps }
+    Order: { client_id: 'id foreign:clients', user_id: 'id foreign:users nullable', status: 'string:30 default:primljeno', total_price: 'decimal:10,2 default:0', notes: 'text nullable', received_at: 'datetime nullable', completed_at: 'datetime nullable', timestamps: timestamps, relationships: { belongsTo: 'Client, User', hasMany: OrderItem } }
+    OrderItem: { order_id: 'id foreign:orders', service_id: 'id foreign:services', quantity: 'integer default:1', unit_price: 'decimal:10,2', line_total: 'decimal:10,2 default:0', description: 'string:255 nullable', timestamps: timestamps, relationships: { belongsTo: 'Order, Service' } }
