@@ -1,0 +1,48 @@
+models:
+  Client:
+    first_name: string:100
+    last_name: string:100
+    phone: string:30 nullable
+    email: string:150 nullable
+    address: string:255 nullable
+    timestamps: true
+
+  Service:
+    name: string:120
+    description: text nullable
+    price: decimal:10,2
+    timestamps: true
+
+  Order:
+    client_id: id foreign:clients
+    user_id: id foreign:users nullable
+    status: string:30 default:primljeno
+    total_price: decimal:10,2 default:0
+    notes: text nullable
+    received_at: datetime nullable
+    completed_at: datetime nullable
+    timestamps: true
+    relationships:
+      belongsTo: Client, User
+      hasMany: OrderItem
+
+  OrderItem:
+    order_id: id foreign:orders
+    service_id: id foreign:services
+    quantity: integer default:1
+    unit_price: decimal:10,2
+    line_total: decimal:10,2 default:0
+    description: string:255 nullable
+    timestamps: true
+    relationships:
+      belongsTo: Order, Service
+
+controllers:
+  Client:
+    resource: true
+  Service:
+    resource: true
+  Order:
+    resource: true
+  OrderItem:
+    resource: true
