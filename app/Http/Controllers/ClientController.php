@@ -29,11 +29,13 @@ class ClientController extends Controller
             'address'    => 'nullable|string|max:255',
         ]);
 
-        Client::create($validated);
+        $client = Client::create($validated);
 
         return redirect()
-            ->route('clients.index')
-            ->with('success', 'Klijent je uspješno dodat.');
+            ->route('orders.create')
+            ->with('success', 'Klijent je uspješno dodat.')
+            ->with('new_client_id', $client->id);
+
     }
 
     public function edit(Client $client)
