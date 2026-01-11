@@ -1,0 +1,5 @@
+[33m672e07a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m feat: add seeders for users clients services and orders
+[33mcb8f1db[m[33m ([m[1;31morigin/main[m[33m)[m feat: generate models migrations and controllers via blueprint
+[33m6b51480[m chore: add draft.yaml
+[33m3728a93[m chore: add blueprint
+[33mf3ead09[m chore: init Laravel project
