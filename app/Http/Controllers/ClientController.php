@@ -10,6 +10,7 @@ class ClientController extends Controller
     public function index()
     {
         $clients = Client::all();
+
         return view('clients.index', compact('clients'));
     }
 
@@ -22,10 +23,10 @@ class ClientController extends Controller
     {
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
-            'last_name'  => 'required|string|max:100',
-            'phone'      => 'nullable|string|max:30',
-            'email'      => 'nullable|email|max:150',
-            'address'    => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:100',
+            'phone' => 'nullable|string|max:30',
+            'email' => 'nullable|email|max:150',
+            'address' => 'nullable|string|max:255',
         ]);
 
         $client = Client::create($validated);
@@ -46,10 +47,10 @@ class ClientController extends Controller
     {
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
-            'last_name'  => 'required|string|max:100',
-            'phone'      => 'nullable|string|max:30',
-            'email'      => 'nullable|email|max:150',
-            'address'    => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:100',
+            'phone' => 'nullable|string|max:30',
+            'email' => 'nullable|email|max:150',
+            'address' => 'nullable|string|max:255',
         ]);
 
         $client->update($validated);

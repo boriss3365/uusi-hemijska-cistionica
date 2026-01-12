@@ -2,13 +2,9 @@
 
 namespace Tests\Feature\Http\Controllers;
 
-use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 /**
  * @see \App\Http\Controllers\ServiceController
  */
-final class ServiceControllerTest extends TestCase
-{
-    
-}
+final class ServiceControllerTest extends TestCase {}

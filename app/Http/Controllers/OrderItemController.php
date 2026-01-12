@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class OrderItemController extends Controller
 {
-
     public function index()
     {
         $items = OrderItem::query()
@@ -18,7 +17,6 @@ class OrderItemController extends Controller
 
         return view('admin.order-items.index', compact('items'));
     }
-
 
     public function edit(OrderItem $order_item)
     {
@@ -31,13 +29,12 @@ class OrderItemController extends Controller
         ]);
     }
 
-
     public function update(Request $request, OrderItem $order_item)
     {
         $validated = $request->validate([
             'description' => 'required|string|max:255',
-            'service_id'  => 'required|exists:services,id',
-            'quantity'    => 'required|integer|min:1|max:100',
+            'service_id' => 'required|exists:services,id',
+            'quantity' => 'required|integer|min:1|max:100',
         ]);
 
         $service = Service::findOrFail($validated['service_id']);
@@ -47,12 +44,11 @@ class OrderItemController extends Controller
 
         $order_item->update([
             'description' => $validated['description'],
-            'service_id'  => (int) $validated['service_id'],
-            'quantity'    => $qty,
-            'unit_price'  => $unit,
-            'line_total'  => $line,
+            'service_id' => (int) $validated['service_id'],
+            'quantity' => $qty,
+            'unit_price' => $unit,
+            'line_total' => $line,
         ]);
-
 
         $order = $order_item->order()->with('orderItems')->first();
         if ($order) {
@@ -64,7 +60,6 @@ class OrderItemController extends Controller
             ->route('admin.order-items.index')
             ->with('success', 'Stavka porudžbine je ažurirana.');
     }
-
 
     public function destroy(OrderItem $order_item)
     {

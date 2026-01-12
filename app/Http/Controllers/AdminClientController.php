@@ -27,10 +27,10 @@ class AdminClientController extends Controller
     {
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
-            'last_name'  => 'required|string|max:100',
-            'phone'      => 'nullable|string|max:30',
-            'email'      => 'nullable|email|max:150',
-            'address'    => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:100',
+            'phone' => 'nullable|string|max:30',
+            'email' => 'nullable|email|max:150',
+            'address' => 'nullable|string|max:255',
         ]);
 
         Client::create($validated);
@@ -49,10 +49,10 @@ class AdminClientController extends Controller
     {
         $validated = $request->validate([
             'first_name' => 'required|string|max:100',
-            'last_name'  => 'required|string|max:100',
-            'phone'      => 'nullable|string|max:30',
-            'email'      => 'nullable|email|max:150',
-            'address'    => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:100',
+            'phone' => 'nullable|string|max:30',
+            'email' => 'nullable|email|max:150',
+            'address' => 'nullable|string|max:255',
         ]);
 
         $client->update($validated);

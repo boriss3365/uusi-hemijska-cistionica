@@ -4,16 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    // =========================
-    // USER (non-admin) VIEW
-    // =========================
+
     public function index(Request $request)
     {
         $userId = $request->user()->id;
@@ -76,8 +73,7 @@ class OrderController extends Controller
                 $unit = (float) $service->price;
                 $line = $qty * $unit;
 
-                OrderItem::create([
-                    'order_id' => $order->id,
+                $order->orderItems()->create([
                     'service_id' => $service->id,
                     'quantity' => $qty,
                     'unit_price' => $unit,
@@ -96,9 +92,7 @@ class OrderController extends Controller
             ->with('success', 'Porudžbina je sačuvana i dodata u aktivne porudžbine.');
     }
 
-    // =========================
-    // ADMIN CRUD
-    // =========================
+
     public function adminIndex()
     {
         $orders = Order::with('client')
@@ -113,7 +107,6 @@ class OrderController extends Controller
         $clients = Client::query()->orderBy('last_name')->orderBy('first_name')->get();
         $services = Service::query()->orderBy('name')->get();
 
-        // NE šaljemo users (ti si već uklonio operatera)
         return view('orders.create', compact('clients', 'services'));
     }
 
@@ -127,16 +120,12 @@ class OrderController extends Controller
             'items.*.quantity' => 'required|integer|min:1|max:100',
         ]);
 
-        // 1) Fix crvenog auth()->user()->id:
         $adminId = $request->user()->id;
 
-        // 2) Da user vidi admin-kreiranu porudžbinu:
-        // uzmi owner user_id iz zadnje porudžbine tog klijenta
         $ownerUserId = Order::where('client_id', $validated['client_id'])
             ->orderByDesc('id')
             ->value('user_id');
 
-        // ako nema prethodnih porudžbina za tog klijenta, fallback je admin
         $finalUserId = $ownerUserId ?: $adminId;
 
         DB::transaction(function () use ($validated, $finalUserId) {
@@ -157,8 +146,7 @@ class OrderController extends Controller
                 $unit = (float) $service->price;
                 $line = $qty * $unit;
 
-                OrderItem::create([
-                    'order_id' => $order->id,
+                $order->orderItems()->create([
                     'service_id' => $service->id,
                     'quantity' => $qty,
                     'unit_price' => $unit,
@@ -177,14 +165,15 @@ class OrderController extends Controller
             ->with('success', 'Porudžbina je dodata.');
     }
 
-    public function edit(Order $order)
-    {
-        $statuses = ['poslato', 'primljeno', 'u_obradi', 'isporuceno'];
 
+
+    public function edit($orderId)
+    {
+        $order = Order::with(['client', 'orderItems.service'])->findOrFail($orderId);
+
+        $statuses = ['poslato', 'primljeno', 'u_obradi', 'isporuceno'];
         $clients = Client::query()->orderBy('last_name')->orderBy('first_name')->get();
         $services = Service::query()->orderBy('name')->get();
-
-        $order->load(['client', 'orderItems.service']);
 
         $items = $order->orderItems->map(function ($it) {
             return [
@@ -196,12 +185,13 @@ class OrderController extends Controller
             ];
         })->values();
 
-        // NE šaljemo users
         return view('admin.orders.edit', compact('order', 'statuses', 'clients', 'services', 'items'));
     }
 
-    public function update(Request $request, Order $order)
+    public function update(Request $request, $orderId)
     {
+        $order = Order::findOrFail($orderId);
+
         $validated = $request->validate([
             'client_id' => 'required|exists:clients,id',
             'status' => 'required|in:poslato,primljeno,u_obradi,isporuceno',
@@ -213,8 +203,6 @@ class OrderController extends Controller
 
         $adminId = $request->user()->id;
 
-        // Da i posle EDIT-a user i dalje vidi porudžbinu:
-        // Ako admin promijeni klijenta, prebacujemo user_id na owner-a tog klijenta
         $ownerUserId = Order::where('client_id', $validated['client_id'])
             ->where('id', '!=', $order->id)
             ->orderByDesc('id')
@@ -233,14 +221,16 @@ class OrderController extends Controller
 
             $total = 0;
 
+
+            $order->refresh();
+
             foreach ($validated['items'] as $item) {
                 $service = Service::findOrFail($item['service_id']);
                 $qty = (int) $item['quantity'];
                 $unit = (float) $service->price;
                 $line = $qty * $unit;
 
-                OrderItem::create([
-                    'order_id' => $order->id,
+                $order->orderItems()->create([
                     'service_id' => $service->id,
                     'quantity' => $qty,
                     'unit_price' => $unit,
@@ -255,12 +245,14 @@ class OrderController extends Controller
         });
 
         return redirect()
-            ->route('admin.orders.edit', $order)
+            ->route('admin.orders.edit', $order->id)
             ->with('success', 'Porudžbina je ažurirana.');
     }
 
-    public function destroy(Order $order)
+    public function destroy($orderId)
     {
+        $order = Order::findOrFail($orderId);
+
         DB::transaction(function () use ($order) {
             $order->orderItems()->delete();
             $order->delete();

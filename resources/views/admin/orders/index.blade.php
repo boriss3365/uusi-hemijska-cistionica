@@ -5,7 +5,7 @@
     <h2 style="margin:0 0 12px 0;">Porudžbine</h2>
 
     <div style="margin-bottom:12px;">
-        <a class="btn" href="{{ route('admin.orders.create') }}">Nova porudžbina</a>
+        <a class="btn" style="background-color: #2563EB" href="{{ route('admin.orders.create') }}">Nova porudžbina</a>
     </div>
 
     <table>

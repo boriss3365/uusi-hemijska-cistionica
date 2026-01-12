@@ -12,9 +12,9 @@ class ServiceFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'        => fake()->words(2, true),
+            'name' => fake()->words(2, true),
             'description' => fake()->sentence(),
-            'price'       => fake()->randomFloat(2, 1, 100),
+            'price' => fake()->randomFloat(2, 1, 100),
         ];
     }
 }

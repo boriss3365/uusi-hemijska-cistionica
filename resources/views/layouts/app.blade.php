@@ -49,15 +49,15 @@
 
                 @if(auth()->user()->is_admin)
                     <a href="{{ route('admin.dashboard') }}">Admin panel</a>
-                    <a href="{{ url('/admin/orders') }}">Porudžbine (CRUD)</a>
-                    <a href="{{ url('/admin/clients') }}">Klijenti (CRUD)</a>
-                    <a href="{{ url('/admin/services') }}">Usluge (CRUD)</a>
-                    <a href="{{ url('/admin/order-items') }}">Stavke porudžbine (CRUD)</a>
+                    <a href="{{ url('/admin/orders') }}">Porudzbine</a>
+                    <a href="{{ url('/admin/clients') }}">Klijenti</a>
+                    <a href="{{ url('/admin/services') }}">Usluge</a>
+                    <a href="{{ url('/admin/order-items') }}">Stavke porudzbine</a>
                 @else
-                    <a href="{{ route('orders.create') }}">Nova porudžbina</a>
-                    <a href="{{ route('orders.index') }}">Aktivne porudžbine</a>
+                    <a href="{{ route('orders.create') }}">Nova porudzbina</a>
+                    <a href="{{ route('orders.index') }}">Aktivne porudzbine</a>
                     <a href="{{ route('services.index') }}">Usluge / Cjenovnik</a>
-                    <a href="{{ route('profile.edit') }}">Podešavanja</a>
+                    <a href="{{ route('profile.edit') }}">Podesavanja</a>
                 @endif
             @endauth
         </div>
