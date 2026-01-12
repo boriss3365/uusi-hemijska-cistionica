@@ -4,8 +4,15 @@
 <div class="card">
     <h2 style="margin:0 0 14px 0;">Nova porudžbina</h2>
 
-    <form method="POST" action="{{ route('orders.store') }}" id="orderForm">
+    @php
+        $isAdminCreate = request()->routeIs('admin.orders.create');
+        $formAction = $isAdminCreate ? route('admin.orders.store') : route('orders.store');
+    @endphp
+
+    <form method="POST" action="{{ $formAction }}" id="orderForm">
         @csrf
+
+
 
         <div class="card" style="background:#f9fafb; border:1px solid #e5e7eb; margin-bottom:14px;">
             <h3 style="margin:0 0 10px 0;">Podaci o klijentu</h3>
@@ -28,9 +35,11 @@
                     </select>
                 </div>
 
-                <div style="min-width:220px;">
-                    <a class="btn" href="{{ route('clients.create') }}" style="background:#2563eb;">Dodaj novog klijenta</a>
-                </div>
+                @if(!$isAdminCreate)
+                    <div style="min-width:220px;">
+                        <a class="btn" href="{{ route('clients.create') }}" style="background:#2563eb;">Dodaj novog klijenta</a>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -65,8 +74,6 @@
                         Dodaj stavku
                     </button>
                 </div>
-
-
             </div>
 
             <table id="itemsTable">
@@ -99,7 +106,7 @@
 
             <div class="row" style="gap:10px;">
                 <button class="btn" type="submit" id="saveBtn" disabled>Sačuvaj porudžbinu</button>
-                <a class="btn btn-secondary" href="{{ route('dashboard') }}">Otkaži</a>
+                <a class="btn btn-secondary" href="{{ $isAdminCreate ? route('admin.orders.index') : route('dashboard') }}">Otkaži</a>
             </div>
         </div>
     </form>

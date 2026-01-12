@@ -54,9 +54,15 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
         return view('admin.dashboard');
     })->name('dashboard');
 
+
+    Route::get('/orders', [OrderController::class, 'adminIndex'])->name('orders.index');
+    Route::get('/orders/create', [OrderController::class, 'createAdmin'])->name('orders.create');
+    Route::post('/orders', [OrderController::class, 'storeAdmin'])->name('orders.store');
+    Route::resource('orders', OrderController::class)->except(['index', 'create', 'store']);
+
+
     Route::resource('clients', ClientController::class);
     Route::resource('services', ServiceController::class);
-    Route::resource('orders', OrderController::class);
     Route::resource('order-items', OrderItemController::class);
 });
 
