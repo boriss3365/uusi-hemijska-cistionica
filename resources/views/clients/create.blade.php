@@ -1,10 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $isAdmin = request()->routeIs('admin.*');
+
+    $formAction = $isAdmin ? route('admin.clients.store') : route('clients.store');
+    $backUrl = $isAdmin ? route('admin.clients.index') : route('orders.create');
+@endphp
+
 <div class="card" style="max-width:700px;">
     <h2 style="margin:0 0 22px 0;">Dodaj klijenta</h2>
 
-    <form method="POST" action="{{ route('clients.store') }}">
+    <form method="POST" action="{{ $formAction }}">
         @csrf
 
         <div style="margin-bottom:18px;">
@@ -34,7 +41,7 @@
 
         <div class="row" style="gap:10px;">
             <button class="btn" type="submit">Sačuvaj</button>
-            <a class="btn btn-secondary" href="{{ route('orders.create') }}">Nazad</a>
+            <a class="btn btn-secondary" href="{{ $backUrl }}">Nazad</a>
         </div>
     </form>
 </div>

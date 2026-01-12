@@ -1,10 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $isAdmin = request()->routeIs('admin.*');
+
+    $formAction = $isAdmin
+        ? route('admin.clients.update', $client)
+        : route('clients.update', $client);
+
+    $backUrl = $isAdmin ? route('admin.clients.index') : route('dashboard');
+@endphp
+
 <div class="card">
     <h2 style="margin-top:0;">Uredi klijenta</h2>
 
-    <form method="POST" action="{{ route('clients.update', $client) }}">
+    <form method="POST" action="{{ $formAction }}">
         @csrf
         @method('PUT')
 
@@ -35,7 +45,7 @@
 
         <div class="row">
             <button class="btn" type="submit">Sačuvaj</button>
-            <a class="btn btn-secondary" href="{{ route('clients.index') }}">Nazad</a>
+            <a class="btn btn-secondary" href="{{ $backUrl }}">Nazad</a>
         </div>
     </form>
 </div>
