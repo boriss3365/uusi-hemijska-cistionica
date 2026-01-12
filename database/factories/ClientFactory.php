@@ -13,10 +13,10 @@ class ClientFactory extends Factory
     {
         return [
             'first_name' => fake()->firstName(),
-            'last_name' => fake()->lastName(),
-            'phone' => fake()->phoneNumber(),
-            'email' => fake()->safeEmail(),
-            'address' => fake()->regexify('[A-Za-z0-9]{255}'),
+            'last_name'  => fake()->lastName(),
+            'phone'      => fake()->numerify('###-###-###'),
+            'email'      => fake()->safeEmail(),
+            'address'    => fake()->address(),
         ];
     }
 }
