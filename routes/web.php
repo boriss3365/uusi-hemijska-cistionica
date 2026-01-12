@@ -5,6 +5,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemController;
+use App\Http\Controllers\AdminClientController;
 use Illuminate\Support\Facades\Route;
 use App\Models\Order;
 use Illuminate\Http\Request;
@@ -36,9 +37,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
 
-    Route::get('/clients/create', [ClientController::class, 'create'])->name('clients.create');
-    Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
 
+    Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
+    Route::get('/clients/create', [ClientController::class, 'create'])->name('clients.create');
 
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
@@ -61,8 +62,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::resource('orders', OrderController::class)->except(['index', 'create', 'store']);
 
 
-    Route::resource('clients', ClientController::class);
-    Route::resource('services', ServiceController::class);
+    Route::get('/clients/{client}/orders', [AdminClientController::class, 'orders'])->name('clients.orders');
+    Route::resource('clients', AdminClientController::class);
+    Route::resource('services', \App\Http\Controllers\AdminServiceController::class);
     Route::resource('order-items', OrderItemController::class);
 });
 

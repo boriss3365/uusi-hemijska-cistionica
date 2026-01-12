@@ -3,13 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
-class ClientController extends Controller
+class AdminClientController extends Controller
 {
     public function index()
     {
-        $clients = Client::all();
+        $clients = Client::query()
+            ->orderBy('last_name')
+            ->orderBy('first_name')
+            ->get();
+
         return view('clients.index', compact('clients'));
     }
 
@@ -28,13 +33,11 @@ class ClientController extends Controller
             'address'    => 'nullable|string|max:255',
         ]);
 
-        $client = Client::create($validated);
+        Client::create($validated);
 
-        // USER FLOW: vrati na novu porudžbinu i preselektuj klijenta
         return redirect()
-            ->route('orders.create')
-            ->with('success', 'Klijent je uspješno dodat.')
-            ->with('new_client_id', $client->id);
+            ->route('admin.clients.index')
+            ->with('success', 'Klijent je uspješno dodat.');
     }
 
     public function edit(Client $client)
@@ -55,7 +58,7 @@ class ClientController extends Controller
         $client->update($validated);
 
         return redirect()
-            ->route('clients.index')
+            ->route('admin.clients.index')
             ->with('success', 'Podaci o klijentu su ažurirani.');
     }
 
@@ -64,7 +67,18 @@ class ClientController extends Controller
         $client->delete();
 
         return redirect()
-            ->route('clients.index')
+            ->route('admin.clients.index')
             ->with('success', 'Klijent je obrisan.');
+    }
+
+    public function orders(Client $client)
+    {
+        $orders = Order::query()
+            ->with('client')
+            ->where('client_id', $client->id)
+            ->orderByDesc('id')
+            ->get();
+
+        return view('clients.orders', compact('client', 'orders'));
     }
 }
