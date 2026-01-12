@@ -17,29 +17,29 @@ jobs:
         with:
           php-version: '8.2'
           extensions: mbstring, pdo_sqlite
-          coverage: none
+          tools: composer
 
-      - name: Install dependencies
+      - name: Install PHP deps
         run: composer install --no-interaction --prefer-dist --no-progress
 
-      - name: Prepare Laravel
-        run: |
-          cp .env.example .env
-          php artisan key:generate
-          mkdir -p database
-          touch database/database.sqlite
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Run migrations
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        run: php artisan migrate --force
+      - name: Install Node deps
+        run: npm ci
+
+      - name: Build assets (Vite)
+        run: npm run build
 
       - name: Pint (code style)
         run: vendor/bin/pint --test
 
       - name: Run tests
         env:
+          APP_ENV: testing
           DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
+          DB_DATABASE: ":memory:"
         run: php artisan test
