@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-
     public function index(Request $request)
     {
         $userId = $request->user()->id;
@@ -92,7 +91,6 @@ class OrderController extends Controller
             ->with('success', 'Porudžbina je sačuvana i dodata u aktivne porudžbine.');
     }
 
-
     public function adminIndex()
     {
         $orders = Order::with('client')
@@ -165,8 +163,6 @@ class OrderController extends Controller
             ->with('success', 'Porudžbina je dodata.');
     }
 
-
-
     public function edit($orderId)
     {
         $order = Order::with(['client', 'orderItems.service'])->findOrFail($orderId);
@@ -220,7 +216,6 @@ class OrderController extends Controller
             $order->orderItems()->delete();
 
             $total = 0;
-
 
             $order->refresh();
 
